@@ -1,0 +1,26 @@
+{
+  "name": "captivate-app",
+  "version": "1.0.0",
+  "description": "Engagement Boosting Application for Discord",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n0nb1narydev/Captivate-App.git"
+  },
+  "author": "Mel Avery Rumsey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/n0nb1narydev/Captivate-App/issues"
+  },
+  "homepage": "https://github.com/n0nb1narydev/Captivate-App#readme",
+  "dependencies": {
+    "cron": "^2.2.0",
+    "discord": "^0.8.2",
+    "discord.js": "^14.7.1",
+    "openai": "^3.1.0"
+  }
+}
