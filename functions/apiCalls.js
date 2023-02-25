@@ -21,7 +21,7 @@ const getConversationStarter = async (query) => {
         max_tokens: 2048,
         temperature: 1,
     })
-    return response.data.choices[0].text.replace('\n','').replace(':', '');
+    return response.data.choices[0].text.replace('\n','').replace('is:', '').replace('i:', '').replace(':', '');
 
 }
 

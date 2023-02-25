@@ -1,6 +1,7 @@
 import { client } from "../index.js";
 import { unixToDatetimeFunction, getDaysSinceLastMessage } from "./timeFunctions.js";
 import { generatePrompt } from "./apiCalls.js";
+import { getAll } from "../database/databaseHelpers.js";
 
 
 export function getMessageDate(message) {
@@ -9,35 +10,28 @@ export function getMessageDate(message) {
 
 
 export async function getInactiveChannelName(channelID, inactiveDays) {
+    //console.log(typeof channelID)
     let channel = client.channels.cache.get(channelID);
     let prompt = await generatePrompt(channel.name)
+    //console.log(`Prompt: ${prompt}`)
     channel.messages.fetch({ limit: 1 }).then(messages => {
         let lastMessage = messages.first();
         if (lastMessage == undefined) {
+            //console.log(`No messages sent in channel yet.`)
             channel.send(prompt)
         } else if (!lastMessage.author.bot) {
             let messageUnix = lastMessage.createdTimestamp
             let daysSinceSent = getDaysSinceLastMessage(unixToDatetimeFunction(messageUnix))
             if (daysSinceSent > inactiveDays) {
-                console.log(`Getting Inactive Channel: ${channel.name}`)
-                // use channel name in API query for conversation starters
+                //console.log(`Getting Inactive Channel: ${channel.name}`)
                 channel.send(prompt)
-            } else {
-                console.log(`${channel.name} has had recent activity.`)
-                //channel.send(prompt)
             }
+            // else {
+            //     console.log(`${channel.name} has had recent activity.`)
+            // }
         }
     })
     .catch(console.error);
-}
-
-
-export function getGuilds() {
-    let guildsID = [];
-    client.guilds.cache.forEach(guild => {
-        guildsID.push(guild.id)
-    });
-    return guildsID;
 }
 
 
@@ -48,19 +42,24 @@ export function getChannels(guildID) {
         if (channel.type == 0){
             guildTextChannels.push(channel.id)
         }
-
     })
     return guildTextChannels
 }
 
 
-export async function activityChecker(days) {
-    let guilds = getGuilds()
-    for (let i in guilds) {
-        let channels = getChannels(guilds[i])
-        for (let j in channels) {
-            await getInactiveChannelName(channels[j], days);
+export async function activityChecker() {
+    let servers = await getAll(`SELECT * FROM servers`)
+    // for each server in the db
+    for (let i in servers) {
+        console.log('Server ID ' + servers[i].serverID)
+        let channelList = servers[i].channels.split(',')
+        console.log("Channels " + channelList)
+         // loop through channels and run get active channel name function
+        for (let j in channelList) {
+            console.log("Channel Loop " + channelList[j])
+            await getInactiveChannelName(channelList[j], servers[i].inactivityTime)
         }
     }
+
 
 }
