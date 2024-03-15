@@ -1,6 +1,5 @@
 import config from "../config.json" assert { type: "json" };
 import { EmbedBuilder, SlashCommandBuilder } from '@discordjs/builders';
-import { PermissionFlagsBits } from 'discord.js'
 
 
 // -------------- Create Command -------------- 

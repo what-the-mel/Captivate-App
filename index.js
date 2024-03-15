@@ -1,5 +1,6 @@
 import config from "./config.json" assert { type: "json" };
 import { testCommand, testCommandRun } from "./commands/testCommand.js";
+import { playerCommand, getPlayer } from "./commands/getPlayerInfo.js";
 
 
 // -------------- Set up App Client --------------
@@ -15,7 +16,8 @@ function addCommands(commandList) {
 }
 
 const commands = [
-  testCommand
+  testCommand,
+  playerCommand
 ];
 
 // --------------- On Interaction ----------------------
@@ -23,6 +25,9 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
     if (interaction.commandName == "test") {
       testCommandRun(interaction);
+    }
+    else if (interaction.commandName == "get_player") {
+      getPlayer(interaction)
     }
   }
 });
