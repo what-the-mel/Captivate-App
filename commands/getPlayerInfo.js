@@ -1,6 +1,7 @@
 import { hiscores, miscellaneous, runemetrics } from "runescape-api"
 
-import { EmbedBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, } from '@discordjs/builders';
+
 
 
 // -------------- Create Command -------------- 
@@ -12,11 +13,12 @@ export const playerCommand = new SlashCommandBuilder()
         .setName("name")
         .setDescription("Enter the players name.")
         .setRequired(true)
-    )
-    
+)
+
 
 // // -------------- Command Function -------------- 
 export async function getPlayer(interaction) {
+    await interaction.deferReply({ });
     let nameEntered = interaction.options.data[0].value;
     try {
         let data = await runemetrics.getProfile(nameEntered);
@@ -30,7 +32,7 @@ export async function getPlayer(interaction) {
                 { name: "Experience", value: `${data.overall.experience}`, inline: true },
             ).setImage(avatarUrl)
             .addFields(
-                { name: "-------QUEST STATS-------", value: ` `},
+                { name: "---------QUEST STATS---------", value: ` `},
                 { name: "Completed", value: `${data.quests.complete}`, inline: true },
                 { name: "Started", value: `${data.quests.started}`, inline: true },
                 { name: "Remaining", value: `${data.quests.not_started}`, inline: true },
@@ -45,11 +47,10 @@ export async function getPlayer(interaction) {
                 { name: "Magic", value: `${data.skills.magic.level}`, inline: true },
                 
             )
-        interaction.reply({ embeds: [embed] });
+        interaction.editReply({ embeds: [embed] });
+        
     } catch (error) {
         console.log(error)
         interaction.reply({ content: `The player ${nameEntered} does not exist.`, ephemeral: true });
     }
 }
-
-

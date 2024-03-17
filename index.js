@@ -1,6 +1,7 @@
 import config from "./config.json" assert { type: "json" };
 import { testCommand, testCommandRun } from "./commands/testCommand.js";
 import { playerCommand, getPlayer } from "./commands/getPlayerInfo.js";
+import { skillsCommand, getSkills } from "./commands/getPlayerSkills.js";
 
 
 // -------------- Set up App Client --------------
@@ -16,18 +17,17 @@ function addCommands(commandList) {
 }
 
 const commands = [
-  testCommand,
-  playerCommand
+  playerCommand,
+  skillsCommand,
 ];
 
 // --------------- On Interaction ----------------------
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
-    if (interaction.commandName == "test") {
-      testCommandRun(interaction);
-    }
-    else if (interaction.commandName == "get_player") {
+    if (interaction.commandName == "get_player") {
       getPlayer(interaction)
+    } else if (interaction.commandName == "get_player_skills") {
+      getSkills(interaction)
     }
   }
 });
@@ -36,6 +36,7 @@ client.on("interactionCreate", async (interaction) => {
 client.on("ready", async () => {
   console.log("App is online.");
   addCommands(commands);
+  console.log(`${commands.length} commands added`)
 });
 
 // -------------- Run application --------------
